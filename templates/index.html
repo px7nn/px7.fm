@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>px7.fm</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="icon" type="image/png" href="/static/images/icons/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/static/images/icons/favicon.svg" />
+  <link rel="shortcut icon" href="/static/images/icons/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/images/icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="px7" />
+  <link rel="manifest" href="/static/site.webmanifest" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside id="sidebar">
+    <div class="logo-wrap">
+      <div class="logo-text"><span class="logo-dot"></span>PX7.FM</div>
+      <div class="logo-tag">Music · Artists · Albums</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Menu</div>
+      <div class="nav-item active" data-view="home" onclick="__px7.setView('home',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
+      </div>
+      <div class="nav-item" data-view="search" onclick="__px7.setView('search',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Search
+      </div>
+      <div class="nav-item" data-view="liked" onclick="__px7.setView('liked',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Liked Songs
+      </div>
+      <div class="nav-item" data-view="recent" onclick="__px7.setView('recent',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Recently Played
+      </div>
+    </div>
+    <div class="queue-section">
+      <div class="queue-header">
+        <span class="queue-title">Up Next</span>
+        <span class="queue-clear" onclick="__px7.clearQueue()">Clear</span>
+      </div>
+      <ul class="queue-list" id="queue-list"></ul>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <main id="main">
+
+    <!-- HOME -->
+    <div id="view-home">
+      <div class="topbar">
+        <span class="topbar-title">WHAT'S HOT</span>
+        <div class="topbar-actions">
+          <button class="icon-btn" onclick="__px7.setView('search',document.querySelector('[data-view=search]'))" title="Search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="genre-row" id="genre-row">
+        <div class="genre-chip active" onclick="__px7.filterGenre(this,'all')">All</div>
+        <div class="genre-chip" onclick="__px7.filterGenre(this,'lofi hip hop')">Lo-Fi</div>
+        <div class="genre-chip" onclick="__px7.filterGenre(this,'hip hop beats')">Hip-Hop</div>
+        <div class="genre-chip" onclick="__px7.filterGenre(this,'electronic music')">Electronic</div>
+        <div class="genre-chip" onclick="__px7.filterGenre(this,'jazz music')">Jazz</div>
+        <div class="genre-chip" onclick="__px7.filterGenre(this,'ambient music')">Ambient</div>
+        <div class="genre-chip" onclick="__px7.filterGenre(this,'rock music')">Rock</div>
+        <div class="genre-chip" onclick="__px7.filterGenre(this,'classical music')">Classical</div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">TRENDING NOW</span>
+          <span class="section-more" onclick="__px7.setView('search',document.querySelector('[data-view=search]'))">See All →</span>
+        </div>
+        <div class="cards-grid stagger" id="featured-grid"></div>
+      </div>
+      <div class="section" style="margin-top:8px">
+        <div class="section-header">
+          <span class="section-title">RECENTLY PLAYED</span>
+          <span class="section-more" onclick="__px7.setView('recent',document.querySelector('[data-view=recent]'))">See All →</span>
+        </div>
+        <div class="cards-grid stagger" id="recent-grid"></div>
+      </div>
+      <div class="pb-28"></div>
+    </div>
+
+    <!-- SEARCH -->
+    <div id="view-search" style="display:none">
+      <div class="topbar">
+        <span class="topbar-title">SEARCH</span>
+      </div>
+      <div class="search-hero">
+        <div class="search-hero-box">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input id="main-search-input" type="text" placeholder="Artists, songs, anything…" onkeydown="if(event.key==='Enter')__px7.doSearch()"/>
+          <button class="search-btn" onclick="__px7.doSearch()">SEARCH</button>
+        </div>
+        <div class="loading-bar" id="loading-bar"></div>
+      </div>
+      <div id="search-results-wrap" style="padding:20px 28px 28px">
+        <div class="idle-state fade-up">
+          <div class="idle-icon">🎵</div>
+          <div class="idle-title">FIND YOUR SOUND</div>
+          <div class="idle-sub">Search YouTube for any track, artist, or vibe. We'll stream it for you.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIKED -->
+    <div id="view-liked" style="display:none">
+      <div class="topbar"><span class="topbar-title">LIKED SONGS</span></div>
+      <div id="liked-content" style="padding:20px 28px 28px">
+        <div class="idle-state fade-up">
+          <div class="idle-icon">💛</div>
+          <div class="idle-title">NO LIKES YET</div>
+          <div class="idle-sub">Hit the heart on any track to save it here.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT -->
+    <div id="view-recent" style="display:none">
+      <div class="topbar"><span class="topbar-title">RECENTLY PLAYED</span></div>
+      <div id="recent-content" style="padding:20px 28px 28px">
+        <div class="idle-state fade-up">
+          <div class="idle-icon">🕐</div>
+          <div class="idle-title">NOTHING YET</div>
+          <div class="idle-sub">Your listening history will show up here.</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ══ PLAYER BAR ══ -->
+  <div id="player">
+    <div class="player-progress" onclick="__px7.seekBar(event)">
+      <div class="player-progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+
+    <!-- Now playing -->
+    <div class="now-playing">
+      <div class="now-art" id="now-art"><div class="now-art-ph">🎵</div><div class="art-spinner"></div></div>
+      <div class="now-info">
+        <div class="now-title" id="now-title">Nothing playing</div>
+        <div class="now-channel" id="now-channel">Search and play a track</div>
+      </div>
+      <button class="now-like" id="like-btn" onclick="__px7.toggleLike()" title="Like">
+        <svg id="like-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="ctrl-btns">
+        <button class="ctrl-btn hide-mob" id="shuffle-btn" onclick="__px7.toggleShuffle()" title="Shuffle">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+        </button>
+        <button class="ctrl-btn" onclick="__px7.prevTrack()" title="Previous">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+        </button>
+        <button class="ctrl-play" id="play-btn" onclick="__px7.togglePlay()" title="Play/Pause">
+          <svg id="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        </button>
+        <button class="ctrl-btn" onclick="__px7.nextTrack()" title="Next">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="m6 18 8.5-6L6 6v12zM16 6v12h2V6z"/></svg>
+        </button>
+        <button class="ctrl-btn hide-mob" id="repeat-btn" onclick="__px7.toggleRepeat()" title="Repeat">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        </button>
+      </div>
+      <div class="ctrl-time">
+        <span class="ctrl-time-val" id="time-cur">0:00</span>
+        <div class="time-bar" onclick="__px7.seekBar(event)">
+          <div class="time-fill" id="time-fill" style="width:0%"></div>
+        </div>
+        <span class="ctrl-time-val" id="time-dur">0:00</span>
+      </div>
+    </div>
+
+    <!-- Volume -->
+    <div class="volume-section">
+      <button class="ctrl-btn" onclick="__px7.toggleMute()" title="Mute">
+        <svg id="vol-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        <svg id="mute-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+      </button>
+      <div class="vol-bar" id="vol-bar">
+        <div class="vol-bar-track">
+          <div class="vol-fill" id="vol-fill" style="width:75%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ MOBILE BOTTOM NAV ══ -->
+<nav id="mobile-nav">
+  <div class="mobile-nav-inner">
+    <div class="mobile-nav-item active" data-view="home" onclick="__px7.setView('home',this)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
+    </div>
+    <div class="mobile-nav-item" data-view="search" onclick="__px7.setView('search',this)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Search
+    </div>
+    <div class="mobile-nav-item" data-view="liked" onclick="__px7.setView('liked',this)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Liked
+    </div>
+    <div class="mobile-nav-item" data-view="recent" onclick="__px7.setView('recent',this)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>History
+    </div>
+  </div>
+</nav>
+
+<!-- ══ MOBILE SEARCH DRAWER ══ -->
+<div id="mobile-search">
+  <div class="mob-search-top">
+    <button style="color:var(--muted);padding:4px" onclick="__px7.closeMobileSearch()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    </button>
+    <div class="search-hero-box" style="flex:1">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="mob-search-input" type="text" placeholder="Search…" onkeydown="if(event.key==='Enter')__px7.doMobileSearch()"/>
+    </div>
+    <button class="search-btn" onclick="__px7.doMobileSearch()">GO</button>
+  </div>
+  <div id="mob-results" style="overflow-y:auto;flex:1"></div>
+</div>
+
+<div id="toast"></div>
+<audio id="audio-el" preload="none"></audio>
+
+<script type="module" src="/static/js/index.js"></script>
+</body>
+</html>
