@@ -9,7 +9,7 @@ from    app         import app, HOST, PORT
 
 def base_path():
     if getattr(sys, 'frozen', False):
-        return sys._MEIPASS
+        return os.path.dirname(sys.executable)
     return os.path.abspath('.')
 
 def run_flask():
@@ -37,8 +37,8 @@ def wait_for_server(timeout = 10):
 
 
 def launch_frontend():
-    neutralino_exe = os.path.join(base_path(), 'neutralino', 'bin', 'neutralino-win_x64.exe')
-    cwd = os.path.join(base_path(), 'neutralino')
+    neutralino_exe = os.path.join(base_path(), '_internal', 'neutralino', 'bin', 'neutralino-win_x64.exe')
+    cwd = os.path.join(base_path(), '_internal', 'neutralino')
     frontend = Popen([neutralino_exe, '--load-dir-res', '--path=.'], cwd=cwd)
 
     frontend.wait()
