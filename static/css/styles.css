@@ -254,42 +254,47 @@ img{display:block;max-width:100%}
 /* Mobile ≤640px */
 @media(max-width:640px){
   :root{
-    --player:72px;
-    --sidebar:0px;
-    /* height of mobile bottom nav tabs (icon + label + padding) */
+    --player: 68px;
     --mobile-nav-h: 56px;
+    --sidebar: 0px;
   }
-  #app{grid-template-columns:1fr;grid-template-rows:1fr var(--player)}
+
+  /* Grid only manages #main now — player and nav are fixed */
+  #app{grid-template-columns:1fr;grid-template-rows:1fr}
   #sidebar{display:none}
 
-  /* main scroll area must clear BOTH the player row AND the floating nav bar */
-  #main{
-    grid-column:1;
-    padding-bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom, 0px));
+  /* Player: fixed to bottom, sits above the nav */
+  #player{
+    position:fixed;
+    bottom:var(--mobile-nav-h);
+    left:0;right:0;
+    height:var(--player);
+    padding:0 10px;
+    gap:8px;
+    align-items:center;
+    z-index:100;
   }
 
-  /* mobile nav sits above the player bar, not overlapping it */
+  /* Nav: fixed to the very bottom */
   #mobile-nav{
     display:block;
-    bottom:var(--player);
+    position:fixed;
+    bottom:0;left:0;right:0;
+    height:var(--mobile-nav-h);
+    z-index:200;
   }
   .mobile-nav-inner{
+    display:flex;justify-content:space-around;
     padding:8px 0 calc(8px + env(safe-area-inset-bottom, 0px));
   }
 
-  /* player gets its own safe-area bottom padding */
-  #player{
-    padding:0 10px;
-    padding-bottom:env(safe-area-inset-bottom, 0px);
-    gap:8px;
-    /* expand grid row to absorb the extra bottom inset */
-    align-items:center;
-  }
-  #app{
-    grid-template-rows:1fr calc(var(--player) + env(safe-area-inset-bottom, 0px));
+  /* Main scrolls freely, padded so content clears both fixed bars */
+  #main{
+    grid-column:1;
+    padding-bottom:calc(var(--player) + var(--mobile-nav-h) + env(safe-area-inset-bottom, 0px));
   }
 
-  /* toast needs to clear nav + player */
+  /* Toast clears both bars */
   #toast{bottom:calc(var(--player) + var(--mobile-nav-h) + 12px)}
 
   .topbar{padding:12px 14px}
