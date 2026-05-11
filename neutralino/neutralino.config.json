@@ -1,0 +1,56 @@
+{
+  "$schema": "https://raw.githubusercontent.com/neutralinojs/neutralinojs/main/schemas/neutralino.config.schema.json",
+
+  "applicationId": "fm.px7.desktop",
+  "version": "1.0.0",
+
+  "defaultMode": "window",
+
+  "port": 0,
+
+  "documentRoot": "/resources/",
+
+  "url": "http://127.0.0.1:5000/",
+
+  "enableServer": true,
+  "enableNativeAPI": false,
+
+  "logging": {
+    "enabled": false,
+    "writeToLogFile": false
+  },
+
+  "modes": {
+    "window": {
+      "title": "PX7",
+
+      "width": 1200,
+      "height": 800,
+
+      "minWidth": 380,
+      "minHeight": 600,
+
+      "center": true,
+
+      "fullScreen": false,
+      "alwaysOnTop": false,
+
+      "icon": "/resources/icons/PX7.ico",
+
+      "enableInspector": false,
+
+      "borderless": false,
+      "maximize": false,
+      "hidden": false,
+      "resizable": true,
+
+      "exitProcessOnClose": true
+    }
+  },
+
+  "cli": {
+    "binaryName": "PX7",
+    "resourcesPath": "/resources/",
+    "binaryVersion": "6.7.0"
+  }
+}

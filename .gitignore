@@ -1,2 +1,13 @@
 __pycache__/
 *.pyc
+__pycache__/
+*.pyc
+
+build/
+dist/
+*.spec
+
+neutralino/.tmp/
+neutralino/*.log
+
+neutralino/dist/
