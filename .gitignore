@@ -11,3 +11,5 @@ neutralino/.tmp/
 neutralino/*.log
 
 neutralino/dist/
+
+PRIV/
