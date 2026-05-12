@@ -1,0 +1,13 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [1.1.0] - 2026-05-13
+
+### Added
+
+* Queue reordering via drag & drop
+
+### Fixed
+
+* Fixed a UI/playback bug caused by special characters in certain track titles
