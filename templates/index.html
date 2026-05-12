@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>px7.fm</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/static/css/styles.css">
@@ -94,7 +94,7 @@
       <div class="search-hero">
         <div class="search-hero-box">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input id="main-search-input" type="text" placeholder="Artists, songs, anything…" onkeydown="if(event.key==='Enter')__px7.doSearch()"/>
+          <input id="main-search-input" type="text" placeholder="Artists, songs, anything…" autocomplete="off" onkeydown="if(event.key==='Enter')__px7.doSearch()"/>
           <button class="search-btn" onclick="__px7.doSearch()">SEARCH</button>
         </div>
         <div class="loading-bar" id="loading-bar"></div>
@@ -223,7 +223,7 @@
     </button>
     <div class="search-hero-box" style="flex:1">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input id="mob-search-input" type="text" placeholder="Search…" onkeydown="if(event.key==='Enter')__px7.doMobileSearch()"/>
+      <input id="mob-search-input" type="text" placeholder="Search…" autocomplete="off" onkeydown="if(event.key==='Enter')__px7.doMobileSearch()"/>
     </div>
     <button class="search-btn" onclick="__px7.doMobileSearch()">GO</button>
   </div>
