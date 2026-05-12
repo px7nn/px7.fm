@@ -27,7 +27,11 @@ Under the hood it's a Flask HTTP server wrapped in a NeutralinoJS window, bundle
 
 ## Screenshots
 
-_Screenshots / GIF demo coming soon._
+<div align="center">
+
+<img width="749" height="486" alt="Image" src="https://github.com/user-attachments/assets/7e559324-dd9f-4c07-8f79-b94e2e136509" />
+
+</div>
 
 ---
 
