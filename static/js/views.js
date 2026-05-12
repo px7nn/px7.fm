@@ -1,8 +1,8 @@
-import { S }               from './state.js';
-import { esc }             from './utils.js';
-import { playFromList }    from './player.js';
-import { makeResultItem }  from './search.js';
-import { doSearch }        from './search.js';
+import { S }              from './state.js';
+import { playFromList }   from './player.js';
+import { makeResultItem } from './search.js';
+import { doSearch }       from './search.js';
+import { addToQueue }     from './queue.js';
 
 /* ─── View switching ─── */
 export function setView(name, el) {
@@ -28,46 +28,113 @@ export async function loadFeatured() {
   }
 }
 
+/**
+ * Renders a card grid using DOM APIs so special characters in track titles /
+ * channel names can never break click handlers or markup.
+ */
 export function renderGrid(id, tracks, source = 'featured') {
-  document.getElementById(id).innerHTML = tracks.map(t => `
-    <div class="card" onclick='window.__px7.playFromList(${JSON.stringify(t)}, ${JSON.stringify(tracks)}, "${source}")'>
-      <div class="card-art">
-        ${t.thumb
-          ? `<img src="${t.thumb}" loading="lazy"/>`
-          : `<div class="card-art-ph">${t.emoji || '🎵'}</div>`}
-        <div class="card-play-overlay"><div class="card-play-btn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        </div></div>
-      </div>
-      <div class="card-info">
-        <div class="card-title">${esc(t.title)}</div>
-        <div class="card-sub">${esc(t.channel)}</div>
-      </div>
-    </div>`).join('');
+  const grid = document.getElementById(id);
+  grid.innerHTML = '';
+  tracks.forEach(t => grid.appendChild(_buildCard(t, tracks, source)));
+}
+
+function _buildCard(t, tracks, source) {
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.addEventListener('click', () => playFromList(t, tracks, source));
+
+  const artDiv = document.createElement('div');
+  artDiv.className = 'card-art';
+  if (t.thumb) {
+    const img = document.createElement('img');
+    img.src     = t.thumb;
+    img.loading = 'lazy';
+    artDiv.appendChild(img);
+  } else {
+    const ph = document.createElement('div');
+    ph.className   = 'card-art-ph';
+    ph.textContent = t.emoji || '🎵';
+    artDiv.appendChild(ph);
+  }
+  // Play overlay is static SVG — safe to use innerHTML here
+  artDiv.innerHTML += `<div class="card-play-overlay"><div class="card-play-btn">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+  </div></div>`;
+
+  const infoDiv = document.createElement('div');
+  infoDiv.className = 'card-info';
+  const titleDiv = document.createElement('div');
+  titleDiv.className   = 'card-title';
+  titleDiv.textContent = t.title;
+  const subDiv = document.createElement('div');
+  subDiv.className   = 'card-sub';
+  subDiv.textContent = t.channel || '';
+  infoDiv.appendChild(titleDiv);
+  infoDiv.appendChild(subDiv);
+
+  div.appendChild(artDiv);
+  div.appendChild(infoDiv);
+  return div;
 }
 
 /* ─── Liked view ─── */
 export function renderLiked() {
   const c = document.getElementById('liked-content');
-  c.innerHTML = S.liked.length
-    ? `<ul class="results-list stagger">${S.liked.map((r, i) => makeResultItem(r, i, S.liked, 'liked')).join('')}</ul>`
-    : `<div class="idle-state fade-up">
-        <div class="idle-icon">💛</div>
-        <div class="idle-title">NO LIKES YET</div>
-        <div class="idle-sub">Hit the heart on any track to save it here.</div>
-      </div>`;
+  c.innerHTML = '';
+  if (!S.liked.length) {
+    c.innerHTML = `<div class="idle-state fade-up">
+      <div class="idle-icon">💛</div>
+      <div class="idle-title">NO LIKES YET</div>
+      <div class="idle-sub">Hit the heart on any track to save it here.</div>
+    </div>`;
+    return;
+  }
+  const ul = document.createElement('ul');
+  ul.className = 'results-list stagger';
+  S.liked.forEach((r, i) => ul.appendChild(makeResultItem(r, i, S.liked, 'liked')));
+  _attachListListener(ul, S.liked, 'liked');
+  c.appendChild(ul);
 }
 
 /* ─── Recent view ─── */
 export function renderRecentPlayed() {
   const c = document.getElementById('recent-content');
-  c.innerHTML = S.recent.length
-    ? `<ul class="results-list stagger">${S.recent.map((r, i) => makeResultItem(r, i, S.recent, 'recent')).join('')}</ul>`
-    : `<div class="idle-state fade-up">
-        <div class="idle-icon">🕐</div>
-        <div class="idle-title">NOTHING YET</div>
-        <div class="idle-sub">Your listening history will show up here.</div>
-      </div>`;
+  c.innerHTML = '';
+  if (!S.recent.length) {
+    c.innerHTML = `<div class="idle-state fade-up">
+      <div class="idle-icon">🕐</div>
+      <div class="idle-title">NOTHING YET</div>
+      <div class="idle-sub">Your listening history will show up here.</div>
+    </div>`;
+    return;
+  }
+  const ul = document.createElement('ul');
+  ul.className = 'results-list stagger';
+  S.recent.forEach((r, i) => ul.appendChild(makeResultItem(r, i, S.recent, 'recent')));
+  _attachListListener(ul, S.recent, 'recent');
+  c.appendChild(ul);
+}
+
+/**
+ * Delegated click listener for liked/recent lists.
+ * The track registry in search.js already mapped id → track/list/source
+ * when makeResultItem was called, so we look up from the list directly.
+ */
+function _attachListListener(ul, list, source) {
+  ul.addEventListener('click', e => {
+    const addBtn = e.target.closest('.result-add');
+    if (addBtn) {
+      e.stopPropagation();
+      const id    = addBtn.closest('.result-item')?.dataset.id;
+      const track = list.find(t => t.id === id);
+      if (track) addToQueue(e, track);
+      return;
+    }
+    const item  = e.target.closest('.result-item');
+    if (!item) return;
+    const track = list.find(t => t.id === item.dataset.id);
+    if (track) playFromList(track, list, source);
+  });
 }
 
 /* ─── Genre chips ─── */
