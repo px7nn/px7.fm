@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - run: pip install pyinstaller flask requests yt-dlp
+      - run: pip install -r requirements.txt pyinstaller
 
       - name: Build Windows
         run: |
@@ -31,7 +31,7 @@ jobs:
           --add-data "static;static" ^
           --add-binary "neutralino/bin/neutralino-win_x64.exe;neutralino/bin" ^
           --add-data "neutralino/neutralino.config.json;neutralino" ^
-          --add-data "neutralino/resources;neutralino/resources" ^
+          --add-data "neutralino/resources/icons/PX7.ico;neutralino/resources/icons" ^
           --collect-all yt_dlp ^
           --collect-all flask ^
           --collect-all requests ^
@@ -53,7 +53,9 @@ jobs:
         with:
           python-version: "3.11"
 
-      - run: pip install pyinstaller flask requests yt-dlp
+      - run: |
+          chmod +x neutralino/bin/*
+          pip install -r requirements.txt pyinstaller
 
       - name: Build Linux
         run: |
@@ -67,7 +69,7 @@ jobs:
           --add-data "static:static" \
           --add-binary "neutralino/bin/neutralino-linux_x64:neutralino/bin" \
           --add-data "neutralino/neutralino.config.json:neutralino" \
-          --add-data "neutralino/resources:neutralino/resources" \
+          --add-data "neutralino/resources/icons/PX7.png:neutralino/resources/icons" \
           --collect-all yt_dlp \
           --collect-all flask \
           --collect-all requests \
@@ -89,7 +91,9 @@ jobs:
         with:
           python-version: "3.11"
 
-      - run: pip install pyinstaller flask requests yt-dlp
+      - run: |
+          chmod +x neutralino/bin/*
+          pip install -r requirements.txt pyinstaller
 
       - name: Build macOS
         run: |
@@ -103,7 +107,7 @@ jobs:
           --add-data "static:static" \
           --add-binary "neutralino/bin/neutralino-mac_universal:neutralino/bin" \
           --add-data "neutralino/neutralino.config.json:neutralino" \
-          --add-data "neutralino/resources:neutralino/resources" \
+          --add-data "neutralino/resources/icons/PX7.png:neutralino/resources/icons" \
           --collect-all yt_dlp \
           --collect-all flask \
           --collect-all requests \
