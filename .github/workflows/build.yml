@@ -1,0 +1,115 @@
+name: Build PX7
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install pyinstaller flask requests yt-dlp
+
+      - name: Build Windows
+        run: |
+          pyinstaller ^
+          --onedir ^
+          --noconsole ^
+          --noupx ^
+          --name PX7 ^
+          --icon "neutralino/resources/icons/PX7.ico" ^
+          --add-data "templates;templates" ^
+          --add-data "static;static" ^
+          --add-binary "neutralino/bin/neutralino-win_x64.exe;neutralino/bin" ^
+          --add-data "neutralino/neutralino.config.json;neutralino" ^
+          --add-data "neutralino/resources;neutralino/resources" ^
+          --collect-all yt_dlp ^
+          --collect-all flask ^
+          --collect-all requests ^
+          launcher.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PX7-windows
+          path: dist/
+
+
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install pyinstaller flask requests yt-dlp
+
+      - name: Build Linux
+        run: |
+          pyinstaller \
+          --onedir \
+          --noconsole \
+          --noupx \
+          --name PX7 \
+          --icon "neutralino/resources/icons/PX7.png" \
+          --add-data "templates:templates" \
+          --add-data "static:static" \
+          --add-binary "neutralino/bin/neutralino-linux_x64:neutralino/bin" \
+          --add-data "neutralino/neutralino.config.json:neutralino" \
+          --add-data "neutralino/resources:neutralino/resources" \
+          --collect-all yt_dlp \
+          --collect-all flask \
+          --collect-all requests \
+          launcher.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PX7-linux
+          path: dist/
+
+
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install pyinstaller flask requests yt-dlp
+
+      - name: Build macOS
+        run: |
+          pyinstaller \
+          --onedir \
+          --noconsole \
+          --noupx \
+          --name PX7 \
+          --icon "neutralino/resources/icons/PX7.png" \
+          --add-data "templates:templates" \
+          --add-data "static:static" \
+          --add-binary "neutralino/bin/neutralino-mac_universal:neutralino/bin" \
+          --add-data "neutralino/neutralino.config.json:neutralino" \
+          --add-data "neutralino/resources:neutralino/resources" \
+          --collect-all yt_dlp \
+          --collect-all flask \
+          --collect-all requests \
+          launcher.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PX7-macos
+          path: dist/
