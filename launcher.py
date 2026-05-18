@@ -1,6 +1,7 @@
 import  os, sys
 import  requests
 
+from    platform    import system
 from    socket      import create_connection
 from    time        import time, sleep
 from    subprocess  import Popen
@@ -11,6 +12,22 @@ def base_path():
     if getattr(sys, 'frozen', False):
         return os.path.dirname(sys.executable)
     return os.path.abspath('.')
+
+
+def get_neutralino_binary():
+    os_name = system().lower()
+
+    if os_name == "windows":
+        return "neutralino-win_x64.exe"
+
+    elif os_name == "linux":
+        return "neutralino-linux_x64"
+
+    elif os_name == "darwin":
+        return "neutralino-mac_universal"
+
+    raise RuntimeError(f"Unsupported OS: {os_name}")
+
 
 def run_flask():
     app.run(host=HOST, port=PORT, debug=False, use_reloader=False)
@@ -37,9 +54,13 @@ def wait_for_server(timeout = 10):
 
 
 def launch_frontend():
-    neutralino_exe = os.path.join(base_path(), '_internal', 'neutralino', 'bin', 'neutralino-win_x64.exe')
+    neutralino = os.path.join(base_path(), '_internal', 'neutralino', 'bin', get_neutralino_binary())
+    
+    if system().lower() != "windows":
+        os.chmod(neutralino, 0o755)
+
     cwd = os.path.join(base_path(), '_internal', 'neutralino')
-    frontend = Popen([neutralino_exe, '--load-dir-res', '--path=.'], cwd=cwd)
+    frontend = Popen([neutralino, '--load-dir-res', '--path=.'], cwd=cwd)
 
     frontend.wait()
 
