@@ -2,8 +2,8 @@ name: Build PX7
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "v*"
 
 jobs:
 
@@ -38,10 +38,14 @@ jobs:
           --collect-all requests ^
           launcher.py
 
+      - name: Zip artifact
+        shell: pwsh
+        run: Compress-Archive -Path dist/PX7/* -DestinationPath PX7-windows.zip
+
       - uses: actions/upload-artifact@v4
         with:
           name: PX7-windows
-          path: dist/PX7
+          path: PX7-windows.zip
 
 
   build-linux:
@@ -76,10 +80,13 @@ jobs:
           --collect-all requests \
           launcher.py
 
+      - name: Zip artifact
+        run: zip -r PX7-linux.zip dist/PX7
+
       - uses: actions/upload-artifact@v4
         with:
           name: PX7-linux
-          path: dist/PX7
+          path: PX7-linux.zip
 
 
   build-macos:
@@ -129,7 +136,31 @@ jobs:
           --collect-all requests \
           launcher.py
 
+      - name: Zip artifact
+        run: zip -r PX7-macos.zip dist/PX7
+
       - uses: actions/upload-artifact@v4
         with:
           name: PX7-macos
-          path: dist/PX7
+          path: PX7-macos.zip
+
+
+  release:
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/PX7-windows/PX7-windows.zip
+            artifacts/PX7-linux/PX7-linux.zip
+            artifacts/PX7-macos/PX7-macos.zip
