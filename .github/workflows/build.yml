@@ -40,7 +40,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: PX7-windows
-          path: dist/
+          path: dist/PX7
 
 
   build-linux:
@@ -78,7 +78,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: PX7-linux
-          path: dist/
+          path: dist/PX7
 
 
   build-macos:
@@ -116,4 +116,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: PX7-macos
-          path: dist/
+          path: dist/PX7
