@@ -20,6 +20,7 @@ jobs:
       - run: pip install -r requirements.txt pyinstaller
 
       - name: Build Windows
+        shell: cmd
         run: |
           pyinstaller ^
           --onedir ^
@@ -95,6 +96,21 @@ jobs:
           chmod +x neutralino/bin/*
           pip install -r requirements.txt pyinstaller
 
+      - name: Convert PNG to ICNS
+        run: |
+          mkdir -p /tmp/PX7.iconset
+          sips -z 16 16     neutralino/resources/icons/PX7.png --out /tmp/PX7.iconset/icon_16x16.png
+          sips -z 32 32     neutralino/resources/icons/PX7.png --out /tmp/PX7.iconset/icon_16x16@2x.png
+          sips -z 32 32     neutralino/resources/icons/PX7.png --out /tmp/PX7.iconset/icon_32x32.png
+          sips -z 64 64     neutralino/resources/icons/PX7.png --out /tmp/PX7.iconset/icon_32x32@2x.png
+          sips -z 128 128   neutralino/resources/icons/PX7.png --out /tmp/PX7.iconset/icon_128x128.png
+          sips -z 256 256   neutralino/resources/icons/PX7.png --out /tmp/PX7.iconset/icon_128x128@2x.png
+          sips -z 256 256   neutralino/resources/icons/PX7.png --out /tmp/PX7.iconset/icon_256x256.png
+          sips -z 512 512   neutralino/resources/icons/PX7.png --out /tmp/PX7.iconset/icon_256x256@2x.png
+          sips -z 512 512   neutralino/resources/icons/PX7.png --out /tmp/PX7.iconset/icon_512x512.png
+          sips -z 1024 1024 neutralino/resources/icons/PX7.png --out /tmp/PX7.iconset/icon_512x512@2x.png
+          iconutil -c icns /tmp/PX7.iconset -o /tmp/PX7.icns
+
       - name: Build macOS
         run: |
           pyinstaller \
@@ -102,7 +118,7 @@ jobs:
           --noconsole \
           --noupx \
           --name PX7 \
-          --icon "neutralino/resources/icons/PX7.png" \
+          --icon "/tmp/PX7.icns" \
           --add-data "templates:templates" \
           --add-data "static:static" \
           --add-binary "neutralino/bin/neutralino-mac_universal:neutralino/bin" \
