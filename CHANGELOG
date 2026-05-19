@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2026-05-19
+
+### Changed
+
+* Running `python app.py` now starts only the server
+
+### Fixed
+
+* Improved logo/icon sizing and scaling
+
 ## [1.2.0] - 2026-05-19
 
 ### Added
