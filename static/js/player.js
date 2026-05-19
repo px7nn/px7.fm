@@ -1,3 +1,4 @@
+import { setMediaMetadata, setMediaPlaybackState, updatePositionState } from './mediasession.js';
 import { S, persistLiked, persistRecent } from './state.js';
 import { fmt, showToast }                 from './utils.js';
 import { setQueue, renderQueue }          from './queue.js';
@@ -28,6 +29,8 @@ export async function playTrack(track) {
   S.track   = track;
   S.playing = false;
   updateNowPlaying(track);
+  setMediaMetadata(track);
+  setMediaPlaybackState(false);
   setLoadingState(true);
   addToRecent(track);
 
@@ -93,6 +96,7 @@ export function initAudio() {
     document.getElementById('time-fill').style.width     = p + '%';
     document.getElementById('time-cur').textContent = fmt(a.currentTime);
     document.getElementById('time-dur').textContent = fmt(a.duration);
+    updatePositionState();
   });
 
   // 'playing' fires when audio actually starts outputting — clear spinner here
@@ -111,6 +115,7 @@ function setPlayState(p) {
   S.playing = p;
   document.getElementById('play-icon').style.display  = p ? 'none'  : 'block';
   document.getElementById('pause-icon').style.display = p ? 'block' : 'none';
+  setMediaPlaybackState(p);
 }
 
 /* ─── Draggable volume slider (mouse + touch) ─── */

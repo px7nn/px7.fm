@@ -1,3 +1,4 @@
+import { initMediaSessionActions }                        from './mediasession.js';
 import { S }                                              from './state.js';
 import { showToast }                                      from './utils.js';
 import { initAudio, togglePlay, seekBar, setVolume,
@@ -25,5 +26,5 @@ document.addEventListener('DOMContentLoaded', () => {
   renderGrid('recent-grid', S.recent.slice(0, 8), 'recent');
   renderQueue();
   initAudio();
-
+  initMediaSessionActions();
 });
