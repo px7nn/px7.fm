@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2026-05-19
+
+### Added
+
+* Media session API support
+* Hardware media key integration
+* Lock screen and notification playback controls
+
+
 ## [1.3.0] - 2026-05-19
 
 ### Changed
