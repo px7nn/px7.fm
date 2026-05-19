@@ -46,3 +46,7 @@ def stream():
     return jsonify({
         "stream_url": url
     })
+
+
+if __name__ == "__main__":
+    app.run(host=HOST, port=PORT, debug=False, use_reloader=False)
