@@ -31,6 +31,7 @@ jobs:
           --add-data "templates;templates" ^
           --add-data "static;static" ^
           --add-binary "neutralino/bin/neutralino-win_x64.exe;neutralino/bin" ^
+          --add-binary "neutralino/resources.neu;neutralino/bin" ^
           --add-data "neutralino/neutralino.config.json;neutralino" ^
           --add-data "neutralino/resources/icons/PX7.ico;neutralino/resources/icons" ^
           --collect-all yt_dlp ^
@@ -40,7 +41,9 @@ jobs:
 
       - name: Zip artifact
         shell: pwsh
-        run: Compress-Archive -Path dist/PX7/* -DestinationPath PX7-windows.zip
+        run: |
+          Copy-Item -Recurse dist\PX7 PX7
+          Compress-Archive -Path PX7\* -DestinationPath PX7-windows.zip
 
       - uses: actions/upload-artifact@v4
         with:
@@ -73,6 +76,7 @@ jobs:
           --add-data "templates:templates" \
           --add-data "static:static" \
           --add-binary "neutralino/bin/neutralino-linux_x64:neutralino/bin" \
+          --add-binary "neutralino/resources.neu:neutralino/bin" \
           --add-data "neutralino/neutralino.config.json:neutralino" \
           --add-data "neutralino/resources/icons/PX7.png:neutralino/resources/icons" \
           --collect-all yt_dlp \
@@ -81,7 +85,9 @@ jobs:
           launcher.py
 
       - name: Zip artifact
-        run: zip -r PX7-linux.zip dist/PX7
+        run: |
+          cp -r dist/PX7 PX7
+          zip -r PX7-linux.zip PX7
 
       - uses: actions/upload-artifact@v4
         with:
@@ -129,6 +135,7 @@ jobs:
           --add-data "templates:templates" \
           --add-data "static:static" \
           --add-binary "neutralino/bin/neutralino-mac_universal:neutralino/bin" \
+          --add-binary "neutralino/resources.neu:neutralino/bin" \
           --add-data "neutralino/neutralino.config.json:neutralino" \
           --add-data "neutralino/resources/icons/PX7.png:neutralino/resources/icons" \
           --collect-all yt_dlp \
@@ -137,7 +144,9 @@ jobs:
           launcher.py
 
       - name: Zip artifact
-        run: zip -r PX7-macos.zip dist/PX7
+        run: |
+          cp -r dist/PX7 PX7
+          zip -r PX7-macos.zip PX7
 
       - uses: actions/upload-artifact@v4
         with:
