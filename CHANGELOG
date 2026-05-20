@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [1.4.1] - 2026-05-20
+
+### Fixes
+
+* Fixed missing .neu file in builds
+* Fixed incorrect ZIP packaging paths
+
 ## [1.4.0] - 2026-05-19
 
 ### Added
