@@ -43,7 +43,7 @@ jobs:
         shell: pwsh
         run: |
           Copy-Item -Recurse dist\PX7 PX7
-          Compress-Archive -Path PX7\* -DestinationPath PX7-windows.zip
+          Compress-Archive -Path PX7\ -DestinationPath PX7-windows.zip
 
       - uses: actions/upload-artifact@v4
         with:
