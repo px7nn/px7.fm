@@ -60,7 +60,7 @@ def launch_frontend():
         os.chmod(neutralino, 0o755)
 
     cwd = os.path.join(base_path(), '_internal', 'neutralino')
-    frontend = Popen([neutralino, '--load-dir-res', '--path=.'], cwd=cwd)
+    frontend = Popen([neutralino, '--path=.'], cwd=cwd)
 
     frontend.wait()
 
